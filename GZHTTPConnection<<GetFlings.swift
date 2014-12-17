@@ -10,7 +10,7 @@ import Foundation
 
 extension GZHTTPConnection {
     
-    func convertToFlingsArray(obj: AnyObject!,progressHandler:((fling:GZFling)->Void)?)->[GZFling]{
+    func convertToFlingsArray(obj: AnyObject!,progressHandler:((fling:GZFling, index:Int)->Void)?)->[GZFling]{
         
         var dict = obj as [NSObject:AnyObject]
         
@@ -46,13 +46,18 @@ extension GZHTTPConnection {
         if flingObject is [AnyObject]{
             
             if let flingDicts:[AnyTypeDictionary] = flingObject as? [AnyTypeDictionary] {
+                var i = 0
                 
                 flings = flingDicts.map{
                     
                     var fling = GZFling.flingObjectFromDataDict($0)
+                    
                     if let progressHandler = progressHandler{
-                        progressHandler(fling: fling)
+                        progressHandler(fling: fling, index:i)
                     }
+                    
+                    i++
+                    
                     return fling
                 }
                 
@@ -63,7 +68,7 @@ extension GZHTTPConnection {
         return flings
     }
     
-    func getFlingsOfVote(connectorData:GZFlingsOfVoteConnectorData, progressHandler:((fling:GZFling)->Void)?, completionHandler:GZHTTPConnectionCompleteHandlerCallBackArray, failHandler:GZHTTPConnectionCallBackDefaultFailHandler){
+    func getFlingsOfVote(connectorData:GZFlingsOfVoteConnectorData, progressHandler:((fling:GZFling, index:Int)->Void)?, completionHandler:GZHTTPConnectionCompleteHandlerCallBackArray, failHandler:GZHTTPConnectionCallBackDefaultFailHandler){
         
         self.connect(api: "fling/new", connectorData: connectorData, completionHandler: { (obj: AnyObject!, response:NSURLResponse!, error:NSError!) -> Void in
             
@@ -88,7 +93,7 @@ extension GZHTTPConnection {
         
     }
     
-    func getFlingsOfPublic(connectorData:GZGetFlingsConnectorData, progressHandler:((fling:GZFling)->Void)?, completionHandler:GZHTTPConnectionCompleteHandlerCallBackArray, failHandler:GZHTTPConnectionCallBackDefaultFailHandler){
+    func getFlingsOfPublic(connectorData:GZGetFlingsConnectorData, progressHandler:((fling:GZFling, index:Int)->Void)?, completionHandler:GZHTTPConnectionCompleteHandlerCallBackArray, failHandler:GZHTTPConnectionCallBackDefaultFailHandler){
     
         self.connect(api: "fling", connectorData: connectorData, completionHandler: { (obj: AnyObject!, response:NSURLResponse!, error:NSError!) -> Void in
             
@@ -121,7 +126,7 @@ extension GZHTTPConnection {
         
     }
     
-    func getFlingsOfMember(connectorData:GZGetMemberFlingsConnectorData, progressHandler:((fling:GZFling)->Void)?, completionHandler:GZHTTPConnectionCompleteHandlerCallBackArray,failHandler:GZHTTPConnectionCallBackDefaultFailHandler){
+    func getFlingsOfMember(connectorData:GZGetMemberFlingsConnectorData, progressHandler:((fling:GZFling, index:Int)->Void)?, completionHandler:GZHTTPConnectionCompleteHandlerCallBackArray,failHandler:GZHTTPConnectionCallBackDefaultFailHandler){
         
         self.connect(api: "fling/member", connectorData: connectorData, completionHandler: { (obj:AnyObject!, response:NSURLResponse!, error:NSError!) -> Void in
             
